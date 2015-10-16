@@ -11,6 +11,17 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     sudo dnf install -y tmux git vim-enhanced wget curl \
-      python3 python3-pip python3-virtualenv
+      gcc gcc-c++ \
+      python3 python3-devel python3-pip python3-virtualenv \
+      postgresql postgresql-server postgresql-devel
+
+    sudo systemctl enable postgresql.service
+    sudo postgresql-setup --initdb
+    sudo systemctl start postgresql.service
+
+    virtualenv-3.4 nitrate-env
+    nitrate-env/bin/pip install -r /code/requirements.txt
+
+    echo "Go to /code and happy hacking"
   SHELL
 end
